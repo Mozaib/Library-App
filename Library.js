@@ -13,7 +13,6 @@ window.onload = function(){
      let returnObj = convertToObj() // return value becomes the Variable 
       addBookToLibrary(returnObj)
       formObj.closeForm();
-      eraseValues()
       redraw()
   });
 // for(i = 0; i < deleteBtn.length; ++i){
