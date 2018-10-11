@@ -3,7 +3,7 @@ class Book {
     this.title = title;
     this.author = author;
     this.pages = pages;
-    this.status = status ? "Completed" : "Not read yet";
+    this.status = status ? "Read" : "Not read";
   }
 }
 
@@ -12,7 +12,8 @@ window.onload = function(){
     addToBtn.addEventListener('click', () => {
      let returnObj = convertToObj() // return value becomes the Variable 
       addBookToLibrary(returnObj)
-      console.log(myLibrary[0])
+      formObj.closeForm();
+      eraseValues()
       redraw()
   });
 // for(i = 0; i < deleteBtn.length; ++i){
@@ -40,23 +41,12 @@ function checkboxStatus(){
   return completedVal.checked;
 }
 
-///////edit
-// let convertToObj = {
-//   titleTextValue: document.getElementById('title').value,
-//   authorTextValue: document.getElementById('author').value,
-//   pagesNumValue: document.getElementById('pages').value,
-  
-// }
-///////edit
 function convertToObj(){
   const titleTextValue = document.getElementById('title').value;
   const authorTextValue = document.getElementById('author').value;
   const pagesNumValue = document.getElementById('pages').value;
   const status = checkboxStatus()
-  // if(titleTextValue == "" && authorTextValue == "" && pagesNumValue == ""){
-  //     alert('You need to enter the')
-  // }
-  
+
   return new Book(
     titleTextValue,
     authorTextValue,
@@ -76,24 +66,45 @@ const createCardObj = {
     for(i = 0; i < myLibrary.length; ++i){
       this.bookListDom;
       const bookCard = document.createElement('p');
-      const button = document.createElement('BUTTON');
+      const dltBtn = document.createElement('BUTTON');
+      const statusBtn = document.createElement('BUTTON');
         bookCard.id = `book-card`
         bookCard.style.cssText = "text-align: center; font-size: 20px; border: 1px solid black; padding: 10px 0px";
         bookCard.textContent = [`${myLibrary[i].title}, ${myLibrary[i].author}, ${myLibrary[i].pages} Pages, ${myLibrary[i].status}`];
-        button.id = i;
-        button.className = 'deleteBtn'
-        button.setAttribute('onclick', 'deletebookListing(this.id)')
-        button.textContent = 'Delete'
-        button.style.cssText = 'float: right; ';
+        dltBtn.id = i;
+        dltBtn.className = 'deleteBtn'
+        dltBtn.setAttribute('onclick', 'deletebookListing(this.id)')
+        dltBtn.textContent = 'Delete'
+        dltBtn.style.cssText = 'float: right;';
+        statusBtn.id = i;
+        statusBtn.setAttribute('onclick', 'changeStatus(this.id)')
+        statusBtn.textContent = 'Completed';
+        statusBtn.style.cssText = 'float: right;';
         bookList.appendChild(bookCard);
-        bookCard.appendChild(button);
-        console.log('its working')
+        bookCard.appendChild(statusBtn);      
+        bookCard.appendChild(dltBtn);
     }
   }
 }
 
 function render(){ 
   createCardObj.createBook();
+}
+
+function changeStatus(index) {
+  const titleStoredValue = myLibrary[index].title;
+  const authorStoredValue = myLibrary[index].author;
+  const pagesStoredValue = myLibrary[index].pages;
+  let status;
+  if (myLibrary[index].status === 'Read') {
+    status = false
+
+  } else if (myLibrary[index].status === 'Not read') {
+    status = true
+  }
+  myLibrary[index] = new Book(titleStoredValue, authorStoredValue, pagesStoredValue, status)
+
+  redraw()
 }
 
 
