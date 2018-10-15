@@ -1,3 +1,21 @@
+const library = {
+  
+  storage: localStorage,
+
+  getData: function () {
+    if (this.storage.getItem('libraryData')) { 
+      return JSON.parse(this.storage.getItem('libraryData')); 
+    } else {
+      return [];
+    }
+  },
+
+  saveData: function (books) {
+    this.storage.setItem('libraryData', JSON.stringify(books));
+  }
+}
+/////local storage test
+
 class Book {
   constructor(title, author, pages, status){
     this.title = title;
@@ -15,16 +33,10 @@ window.onload = function(){
       formObj.closeForm();
       redraw()
   });
-// for(i = 0; i < deleteBtn.length; ++i){
-//   deleteBtn[i].addEventListener('click', () => {
-//     console.log(i)
-//     deletebookListing(this.id)
-//   })
-// } 
   render()
 }
 
-let myLibrary = [new Book('titlhebde', 'book', 200, true)];
+let myLibrary = [new Book('The Woman in the Window', 'A. J. Finn', 500, false), new Book('The Great Alone', 'Kristin Hannah', 500, false)];
 
 const formObj = {
   openForm: function(){
@@ -56,30 +68,57 @@ function convertToObj(){
 
 
 function addBookToLibrary(obj) {
-  return myLibrary.unshift(obj)
+  myLibrary.unshift(obj)
 }
 
 const createCardObj = {
   bookListDom: document.querySelector('#bookList'),
-  createBook: function(){
+  createBook: function(bgColour1, bgColour2){
     for(i = 0; i < myLibrary.length; ++i){
       this.bookListDom;
-      const bookCard = document.createElement('p');
+      const bookCard = document.createElement('div');
+
+      const div1 = document.createElement('div');
+      const div2 = document.createElement('div');
+      const div3 = document.createElement('div');
+      const div4 = document.createElement('div');
+
       const dltBtn = document.createElement('BUTTON');
       const statusBtn = document.createElement('BUTTON');
+
         bookCard.id = `book-card`
-        bookCard.style.cssText = "text-align: center; font-size: 20px; border: 1px solid black; padding: 10px 0px";
-        bookCard.textContent = [`${myLibrary[i].title}, ${myLibrary[i].author}, ${myLibrary[i].pages} Pages, ${myLibrary[i].status}`];
+        bookCard.style.cssText = `background: linear-gradient(to right, ${bgColour1}, ${bgColour2});`
+      
+        div1.style.cssText = "width: 40%; float: left; color: white; text-shadow: 2px 2px #2E2E2E;";
+        div2.style.cssText = "width: 20%; float: left; color: white; text-shadow: 2px 2px #2E2E2E;";
+        div3.style.cssText = "width: 10%; float: left; color: white; text-shadow: 2px 2px #2E2E2E;";
+        div4.style.cssText = "width: 10%; float: left; color: white; text-shadow: 2px 2px #2E2E2E;";
+
+        div1.textContent = `${myLibrary[i].title}`;
+        div2.textContent = `${myLibrary[i].author}`;
+        div3.textContent = `${myLibrary[i].pages}`;
+        div4.textContent = `${myLibrary[i].status}`;
+
+        //bookCard.textContent = [`${myLibrary[i].title} || ${myLibrary[i].author} || ${myLibrary[i].pages} Pages || ${myLibrary[i].status}`];
         dltBtn.id = i;
-        dltBtn.className = 'deleteBtn'
         dltBtn.setAttribute('onclick', 'deletebookListing(this.id)')
-        dltBtn.textContent = 'Delete'
+        dltBtn.style.cssText = "width: 20px; height: 10px; float: left;";
+        dltBtn.innerHTML = '<i class="fa fa-trash"></i>'
+        //dltBtn.textContent = 'X'
         dltBtn.style.cssText = 'float: right;';
+
         statusBtn.id = i;
         statusBtn.setAttribute('onclick', 'changeStatus(this.id)')
-        statusBtn.textContent = 'Completed';
-        statusBtn.style.cssText = 'float: right;';
+        statusBtn.innerHTML = '<i class="fa fa-folder"></i>'
+        statusBtn.style.cssText = 'float: right; ';
+        
         bookList.appendChild(bookCard);
+
+        bookCard.appendChild(div1)
+        bookCard.appendChild(div2)
+        bookCard.appendChild(div3)
+        bookCard.appendChild(div4)
+
         bookCard.appendChild(statusBtn);      
         bookCard.appendChild(dltBtn);
     }
@@ -87,7 +126,7 @@ const createCardObj = {
 }
 
 function render(){ 
-  createCardObj.createBook();
+  createCardObj.createBook(generateBgcolor(),generateBgcolor());
 }
 
 function changeStatus(index) {
@@ -122,4 +161,12 @@ function redraw(){
       bookCard.removeChild(bookCard.firstChild);
     }
   render()
+};
+
+
+//generate random color for book card
+function generateBgcolor(){
+const bgColorArray = ['#F2AFAF','#F8D090','#B1F9E9','#B1F9E9','#97A6F6','#97A6F6','#97A6F6', '#FFC300', '#FFC300'];
+  return bgColorArray[Math.floor(Math.random()*bgColorArray.length)];
+
 }

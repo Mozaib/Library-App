@@ -3,9 +3,11 @@
 <html>
   <head>
     <title>myLibrary</title>
-    <link rel="stylesheet" type="text/css" href="Library.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
+    <h1>Reading List</h1>
+    <h3>Created by Mohammed Zaib</h3>
     <button class="btn-open" type="button" onclick="formObj.openForm()" name="New book">New Book</button>
   <div class="form-popup" id="myForm" onsubmit="return false;">
   <form action="" class="form-container">
@@ -29,8 +31,17 @@
     <button type="submit" class="btn-close" onclick="formObj.closeForm()">Close</button>
   </form>
 </div>
+<div id="booklistHeader">
+    <div class="titleHeader">Title</div>
+    <div class="authorHeader">Author</div>
+    <div class="pagesHeader">Pages</div>
+    <div class="statusHeader">Status</div>
+    
+  </div>
     <div id="bookList">
+      
     </div>
   </body>
+  <link rel="stylesheet" type="text/css" href="Library.css"/>
   <script src="Library.js" type="text/javascript"></script>
 </html>
