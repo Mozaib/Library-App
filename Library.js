@@ -1,21 +1,3 @@
-const library = {
-  
-  storage: localStorage,
-
-  getData: function () {
-    if (this.storage.getItem('libraryData')) { 
-      return JSON.parse(this.storage.getItem('libraryData')); 
-    } else {
-      return [];
-    }
-  },
-
-  saveData: function (books) {
-    this.storage.setItem('libraryData', JSON.stringify(books));
-  }
-}
-/////local storage test
-
 class Book {
   constructor(title, author, pages, status){
     this.title = title;
@@ -26,6 +8,8 @@ class Book {
 }
 
 window.onload = function(){
+  onLaunchRetrieveData();
+
   let addToBtn = document.getElementById('addToList');
     addToBtn.addEventListener('click', () => {
      let returnObj = convertToObj() // return value becomes the Variable 
@@ -36,7 +20,28 @@ window.onload = function(){
   render()
 }
 
-let myLibrary = [new Book('The Woman in the Window', 'A. J. Finn', 500, false), new Book('The Great Alone', 'Kristin Hannah', 500, false)];
+let myLibrary = []//new Book('The Woman in the Window', 'A. J. Finn', 500, false), new Book('The Great Alone', 'Kristin Hannah', 500, false)];
+
+
+function saveData(){
+  let jsonConvertedBooks = JSON.stringify(myLibrary);
+  localStorage.setItem('booksSaved', jsonConvertedBooks); 
+}
+
+function getData() {
+  if (localStorage.getItem('booksSaved')) { 
+    console.log('working')
+    return JSON.parse(localStorage.getItem('booksSaved')); 
+  } else {
+    return [];
+  }
+}
+
+function onLaunchRetrieveData() { 
+  getData().forEach((bookInfo) => {
+    myLibrary.push(bookInfo);  
+  });
+}
 
 const formObj = {
   openForm: function(){
@@ -69,11 +74,12 @@ function convertToObj(){
 
 function addBookToLibrary(obj) {
   myLibrary.unshift(obj)
+  saveData()
 }
 
 const createCardObj = {
   bookListDom: document.querySelector('#bookList'),
-  createBook: function(bgColour1, bgColour2){
+  createBook: function(bgColour){
     for(i = 0; i < myLibrary.length; ++i){
       this.bookListDom;
       const bookCard = document.createElement('div');
@@ -86,8 +92,8 @@ const createCardObj = {
       const dltBtn = document.createElement('BUTTON');
       const statusBtn = document.createElement('BUTTON');
 
-        bookCard.id = `book-card`
-        bookCard.style.cssText = `background: linear-gradient(to right, ${bgColour1}, ${bgColour2});`
+        bookCard.id = `book-card`;
+        bookCard.style.cssText = `background: ${bgColour}`;
       
         div1.style.cssText = "width: 40%; float: left; color: white; text-shadow: 2px 2px #2E2E2E;";
         div2.style.cssText = "width: 20%; float: left; color: white; text-shadow: 2px 2px #2E2E2E;";
@@ -99,12 +105,10 @@ const createCardObj = {
         div3.textContent = `${myLibrary[i].pages}`;
         div4.textContent = `${myLibrary[i].status}`;
 
-        //bookCard.textContent = [`${myLibrary[i].title} || ${myLibrary[i].author} || ${myLibrary[i].pages} Pages || ${myLibrary[i].status}`];
         dltBtn.id = i;
-        dltBtn.setAttribute('onclick', 'deletebookListing(this.id)')
+        dltBtn.setAttribute('onclick', 'deletebookListing(this.id)');
         dltBtn.style.cssText = "width: 20px; height: 10px; float: left;";
-        dltBtn.innerHTML = '<i class="fa fa-trash"></i>'
-        //dltBtn.textContent = 'X'
+        dltBtn.innerHTML = '<i class="fa fa-trash"></i>';
         dltBtn.style.cssText = 'float: right;';
 
         statusBtn.id = i;
@@ -114,10 +118,10 @@ const createCardObj = {
         
         bookList.appendChild(bookCard);
 
-        bookCard.appendChild(div1)
-        bookCard.appendChild(div2)
-        bookCard.appendChild(div3)
-        bookCard.appendChild(div4)
+        bookCard.appendChild(div1);
+        bookCard.appendChild(div2);
+        bookCard.appendChild(div3);
+        bookCard.appendChild(div4);
 
         bookCard.appendChild(statusBtn);      
         bookCard.appendChild(dltBtn);
@@ -126,7 +130,8 @@ const createCardObj = {
 }
 
 function render(){ 
-  createCardObj.createBook(generateBgcolor(),generateBgcolor());
+  getData()
+  createCardObj.createBook(generateBgcolor());
 }
 
 function changeStatus(index) {
@@ -135,10 +140,10 @@ function changeStatus(index) {
   const pagesStoredValue = myLibrary[index].pages;
   let status;
   if (myLibrary[index].status === 'Read') {
-    status = false
+    status = false;
 
   } else if (myLibrary[index].status === 'Not read') {
-    status = true
+    status = true;
   }
   myLibrary[index] = new Book(titleStoredValue, authorStoredValue, pagesStoredValue, status)
 
@@ -152,6 +157,7 @@ function deletebookListing(clickedId){
     while(bookCard.firstChild){
       bookCard.removeChild(bookCard.firstChild);
     }
+  saveData()
   render()
 }
 
@@ -163,10 +169,7 @@ function redraw(){
   render()
 };
 
-
-//generate random color for book card
 function generateBgcolor(){
 const bgColorArray = ['#F2AFAF','#F8D090','#B1F9E9','#B1F9E9','#97A6F6','#97A6F6','#97A6F6', '#FFC300', '#FFC300'];
   return bgColorArray[Math.floor(Math.random()*bgColorArray.length)];
-
 }
